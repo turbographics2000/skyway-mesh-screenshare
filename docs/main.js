@@ -1,5 +1,11 @@
 const myId = (new MediaStream).id;
 console.log(`myId:${myId}`);
+function appendVideo(stream) {
+    const video = document.createElement('video');
+    video.srcObject = stream;
+    document.body.appendChild(video);
+    video.play();
+}
 chrome.runtime.sendMessage('eiceogpklagmibnoccdincfglccflknk', { cap: true }, async streamId => {
     let stream = null;
     try {
@@ -11,10 +17,7 @@ chrome.runtime.sendMessage('eiceogpklagmibnoccdincfglccflknk', { cap: true }, as
                 }
             }
         });
-        const localView = document.createElement('video');
-        localView.srcObject = stream;
-        document.body.appendChild(localView);
-        localView.play();
+        appendVideo(stream);
     } catch (e) {
         console.error(e);
         return;
@@ -29,10 +32,7 @@ chrome.runtime.sendMessage('eiceogpklagmibnoccdincfglccflknk', { cap: true }, as
         const room = peer.joinRoom('hoge_fuga_piyo_mesh', { mode: 'mesh', stream });
         room.on('stream', stream => {
             console.log(`room on stream peerId:${stream.peerId}`);
-            const remoteView = document.createElement('video');
-            remoteView.srcObject = stream;
-            document.body.appendChild(remoteView);
-            remoteView.play();
+            appendVideo(stream);
         });
     });
 });
